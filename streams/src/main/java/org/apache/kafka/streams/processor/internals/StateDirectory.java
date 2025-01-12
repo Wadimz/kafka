@@ -494,7 +494,9 @@ public class StateDirectory implements AutoCloseable {
         final Thread lockOwner = lockedTasksToOwner.get(taskId);
         if (lockOwner != null && lockOwner.equals(Thread.currentThread())) {
             lockedTasksToOwner.remove(taskId);
-            log.debug("{} Released state dir lock for task {}", logPrefix(), taskId);
+            if (log.isDebugEnabled()) {
+                log.debug("{} Released state dir lock for task {}", logPrefix(), taskId);
+            }
         }
     }
 

@@ -508,7 +508,9 @@ public class InternalStreamsBuilder implements InternalNameProvider {
                 // in order to process records from re-partitioning
                 optimizedSingleRepartition.addChild(keyChangingNodeChild);
 
-                LOG.debug("Removing {} from {}  children {}", keyChangingNodeChild, keyChangingNode, keyChangingNode.children());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Removing {} from {}  children {}", keyChangingNodeChild, keyChangingNode, keyChangingNode.children());
+                }
                 // now remove children from key-changing node
                 keyChangingNode.removeChild(keyChangingNodeChild);
 
@@ -532,7 +534,9 @@ public class InternalStreamsBuilder implements InternalNameProvider {
                 internalTopologyBuilder.maybeUpdateCopartitionSourceGroups(repartitionNodeToBeReplaced.nodeName(),
                                                                            optimizedSingleRepartition.nodeName());
 
-                LOG.debug("Updated node {} children {}", optimizedSingleRepartition, optimizedSingleRepartition.children());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Updated node {} children {}", optimizedSingleRepartition, optimizedSingleRepartition.children());
+                }
             }
 
             keyChangingNode.addChild(optimizedSingleRepartition);

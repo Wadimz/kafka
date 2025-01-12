@@ -434,9 +434,11 @@ public class SharePartitionManager implements AutoCloseable {
                 }
 
                 context = new ShareSessionContext(reqMetadata, shareFetchDataWithMaxBytes);
-                log.debug("Created a new ShareSessionContext with key {} isSubsequent {} returning {}. A new share " +
-                        "session will be started.", responseShareSessionKey, false,
-                        partitionsToLogString(shareFetchDataWithMaxBytes.keySet()));
+                if (log.isDebugEnabled()) {
+                    log.debug("Created a new ShareSessionContext with key {} isSubsequent {} returning {}. A new share " +
+                            "session will be started.", responseShareSessionKey, false,
+                            partitionsToLogString(shareFetchDataWithMaxBytes.keySet()));
+                }
             }
         } else {
             // We update the already existing share session.
@@ -456,13 +458,15 @@ public class SharePartitionManager implements AutoCloseable {
                         shareFetchDataWithMaxBytes, toForget);
                 cache.touch(shareSession, time.milliseconds());
                 shareSession.epoch = ShareRequestMetadata.nextEpoch(shareSession.epoch);
-                log.debug("Created a new ShareSessionContext for session key {}, epoch {}: " +
-                                "added {}, updated {}, removed {}", shareSession.key(), shareSession.epoch,
-                        partitionsToLogString(modifiedTopicIdPartitions.get(
-                                ShareSession.ModifiedTopicIdPartitionType.ADDED)),
-                        partitionsToLogString(modifiedTopicIdPartitions.get(ShareSession.ModifiedTopicIdPartitionType.UPDATED)),
-                        partitionsToLogString(modifiedTopicIdPartitions.get(ShareSession.ModifiedTopicIdPartitionType.REMOVED))
-                );
+                if (log.isDebugEnabled()) {
+                    log.debug("Created a new ShareSessionContext for session key {}, epoch {}: " +
+                                    "added {}, updated {}, removed {}", shareSession.key(), shareSession.epoch,
+                            partitionsToLogString(modifiedTopicIdPartitions.get(
+                                    ShareSession.ModifiedTopicIdPartitionType.ADDED)),
+                            partitionsToLogString(modifiedTopicIdPartitions.get(ShareSession.ModifiedTopicIdPartitionType.UPDATED)),
+                            partitionsToLogString(modifiedTopicIdPartitions.get(ShareSession.ModifiedTopicIdPartitionType.REMOVED))
+                    );
+                }
                 context = new ShareSessionContext(reqMetadata, shareSession);
             }
         }

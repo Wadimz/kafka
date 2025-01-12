@@ -531,13 +531,15 @@ public class Selector implements Selectable, AutoCloseable {
                     if (channel.finishConnect()) {
                         this.connected.add(nodeId);
                         this.sensors.connectionCreated.record();
-
-                        SocketChannel socketChannel = (SocketChannel) key.channel();
-                        log.debug("Created socket with SO_RCVBUF = {}, SO_SNDBUF = {}, SO_TIMEOUT = {} to node {}",
-                                socketChannel.socket().getReceiveBufferSize(),
-                                socketChannel.socket().getSendBufferSize(),
-                                socketChannel.socket().getSoTimeout(),
-                                nodeId);
+                        if (log.isDebugEnabled()) {
+                            try(SocketChannel socketChannel = (SocketChannel) key.channel()) {
+                                log.debug("Created socket with SO_RCVBUF = {}, SO_SNDBUF = {}, SO_TIMEOUT = {} to node {}",
+                                    socketChannel.socket().getReceiveBufferSize(),
+                                    socketChannel.socket().getSendBufferSize(),
+                                    socketChannel.socket().getSoTimeout(),
+                                    nodeId);
+                            }
+                        }
                     } else {
                         continue;
                     }

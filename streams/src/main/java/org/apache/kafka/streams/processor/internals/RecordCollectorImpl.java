@@ -320,7 +320,7 @@ public class RecordCollectorImpl implements RecordCollector {
                                         final String processorNodeId,
                                         final InternalProcessorContext<Void, Void> context,
                                         final Exception serializationException) {
-        log.debug(String.format("Error serializing record for topic %s", topic), serializationException);
+        log.debug("Error serializing record for topic {}", topic, serializationException);
 
         final ProducerRecord<K, V> record = new ProducerRecord<>(topic, partition, timestamp, key, value, headers);
 
@@ -339,14 +339,9 @@ public class RecordCollectorImpl implements RecordCollector {
             // while Java distinguishes checked vs unchecked exceptions, other languages
             // like Scala or Kotlin do not, and thus we need to catch `Exception`
             // (instead of `RuntimeException`) to work well with those languages
-            log.error(
-                String.format(
-                    "Production error callback failed after serialization error for record %s: %s",
-                    origin.toString().toLowerCase(Locale.ROOT),
-                    errorHandlerContext(context, processorNodeId)
-                ),
-                serializationException
-            );
+            log.error("Production error callback failed after serialization error for record {}: {}",
+                origin.toString().toLowerCase(Locale.ROOT), errorHandlerContext(context, processorNodeId),
+                serializationException);
             throw new FailedProcessingException(
                 "Fatal user code error in production error callback",
                 processorNodeId,

@@ -941,12 +941,8 @@ public class TaskManager {
                         task.clearTaskTimeout();
                     } catch (final TimeoutException timeoutException) {
                         task.maybeInitTaskTimeoutOrThrow(now, timeoutException);
-                        log.debug(
-                            String.format(
-                                "Could not complete restoration for %s due to the following exception; will retry",
-                                task.id()),
-                            timeoutException
-                        );
+                        log.debug("Could not complete restoration for {} due to the following exception; will retry",
+                            task.id(), timeoutException);
 
                         allRunning = false;
                     }
@@ -1037,13 +1033,8 @@ public class TaskManager {
         } catch (final TimeoutException timeoutException) {
             task.maybeInitTaskTimeoutOrThrow(now, timeoutException);
             stateUpdater.add(task);
-            log.debug(
-                String.format(
-                    "Could not complete restoration for %s due to the following exception; adding the task " +
-                        "back to the state updater and will retry",
-                    task.id()),
-                timeoutException
-            );
+            log.debug("Could not complete restoration for {} due to the following exception; adding the task " +
+                "back to the state updater and will retry", task.id(), timeoutException);
         }
     }
 

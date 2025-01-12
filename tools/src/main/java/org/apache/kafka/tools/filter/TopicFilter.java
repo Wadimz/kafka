@@ -62,10 +62,12 @@ public abstract class TopicFilter {
         @Override
         public boolean isTopicAllowed(String topic, boolean excludeInternalTopics) {
             boolean allowed = topic.matches(regex) && !(Topic.isInternal(topic) && excludeInternalTopics);
-            if (allowed) {
-                log.debug("{} allowed", topic);
-            } else {
-                log.debug("{} filtered", topic);
+            if (log.isDebugEnabled()) {
+                if (allowed) {
+                    log.debug("{} allowed", topic);
+                } else {
+                    log.debug("{} filtered", topic);
+                }
             }
             return allowed;
         }

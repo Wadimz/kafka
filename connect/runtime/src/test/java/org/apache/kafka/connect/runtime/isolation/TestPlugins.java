@@ -290,7 +290,7 @@ public class TestPlugins {
         try {
             for (TestPackage testPackage : TestPackage.values()) {
                 if (pluginJars.containsKey(testPackage)) {
-                    log.debug("Skipping recompilation of " + testPackage.resourceDir());
+                    log.debug("Skipping recompilation of {}", testPackage.resourceDir());
                 }
                 pluginJars.put(testPackage, createPluginJar(testPackage.resourceDir(), testPackage.removeRuntimeClasses()));
             }

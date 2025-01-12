@@ -448,8 +448,7 @@ public class IncrementalCooperativeAssignor implements ConnectAssignor {
         }
 
         final long now = time.milliseconds();
-        log.debug("Found the following connectors and tasks missing from previous assignments: "
-                + lostAssignments);
+        log.debug("Found the following connectors and tasks missing from previous assignments: {}", lostAssignments);
 
         Set<String> activeMembers = completeWorkerAssignment.stream()
                 .map(WorkerLoad::worker)
@@ -479,9 +478,11 @@ public class IncrementalCooperativeAssignor implements ConnectAssignor {
             }
 
             if (!candidateWorkerLoad.isEmpty()) {
-                log.debug("Assigning lost tasks to {} candidate workers: {}", 
+                if (log.isDebugEnabled()) {
+                    log.debug("Assigning lost tasks to {} candidate workers: {}",
                         candidateWorkerLoad.size(),
                         candidateWorkerLoad.stream().map(WorkerLoad::worker).collect(Collectors.joining(",")));
+                }
                 Iterator<WorkerLoad> candidateWorkerIterator = candidateWorkerLoad.iterator();
                 for (String connector : lostAssignments.connectors()) {
                     // Loop over the candidate workers as many times as it takes

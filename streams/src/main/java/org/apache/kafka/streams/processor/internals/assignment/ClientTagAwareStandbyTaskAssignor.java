@@ -262,11 +262,13 @@ class ClientTagAwareStandbyTaskAssignor implements StandbyTaskAssignor {
             countOfUsedClients++;
             numRemainingStandbys--;
 
-            log.debug("Assigning {} out of {} standby tasks for an active task [{}] with client tags {}. " +
-                    "Standby task client tags are {}.",
+            if (log.isDebugEnabled()) {
+                log.debug("Assigning {} out of {} standby tasks for an active task [{}] with client tags {}. " +
+                        "Standby task client tags are {}.",
                     numberOfStandbyClients - numRemainingStandbys, numberOfStandbyClients, activeTaskId,
                     clientTagFunction.apply(activeTaskClient, clientStates.get(activeTaskClient)),
                     clientTagFunction.apply(clientStateOnUsedTagDimensions.processId(), clientStateOnUsedTagDimensions));
+            }
 
             clientStateOnUsedTagDimensions.assignStandby(activeTaskId);
             lastUsedClient = clientOnUnusedTagDimensions;

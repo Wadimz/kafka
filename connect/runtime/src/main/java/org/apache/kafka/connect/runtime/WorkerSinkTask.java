@@ -312,7 +312,9 @@ class WorkerSinkTask extends WorkerTask<ConsumerRecord<byte[], byte[]>, SinkReco
         if (SinkConnectorConfig.hasTopicsConfig(taskConfig)) {
             List<String> topics = SinkConnectorConfig.parseTopicsList(taskConfig);
             consumer.subscribe(topics, new HandleRebalance());
-            log.debug("{} Initializing and starting task for topics {}", this, String.join(", ", topics));
+            if (log.isDebugEnabled()) {
+                log.debug("{} Initializing and starting task for topics {}", this, String.join(", ", topics));
+            }
         } else {
             String topicsRegexStr = taskConfig.get(SinkTask.TOPICS_REGEX_CONFIG);
             Pattern pattern = Pattern.compile(topicsRegexStr);
@@ -434,7 +436,9 @@ class WorkerSinkTask extends WorkerTask<ConsumerRecord<byte[], byte[]>, SinkReco
             } else {
                 log.error("{} Offset commit failed, rewinding to last committed offsets", this, t);
                 for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : lastCommittedOffsetsForPartitions.entrySet()) {
-                    log.debug("{} Rewinding topic partition {} to offset {}", this, entry.getKey(), entry.getValue().offset());
+                    if (log.isDebugEnabled()) {
+                        log.debug("{} Rewinding topic partition {} to offset {}", this, entry.getKey(), entry.getValue().offset());
+                    }
                     consumer.seek(entry.getKey(), entry.getValue().offset());
                 }
                 currentOffsets.putAll(lastCommittedOffsetsForPartitions);

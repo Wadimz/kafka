@@ -82,13 +82,15 @@ public class StreamsRebalanceListener implements ConsumerRebalanceListener {
 
     @Override
     public void onPartitionsRevoked(final Collection<TopicPartition> partitions) {
-        log.debug("Current state {}: revoked partitions {} because of consumer rebalance.\n" +
-                      "\tcurrently assigned active tasks: {}\n" +
-                      "\tcurrently assigned standby tasks: {}\n",
-                  streamThread.state(),
-                  partitions,
-                  taskManager.activeTaskIds(),
-                  taskManager.standbyTaskIds());
+        if (log.isDebugEnabled()) {
+            log.debug("Current state {}: revoked partitions {} because of consumer rebalance.\n" +
+                          "\tcurrently assigned active tasks: {}\n" +
+                          "\tcurrently assigned standby tasks: {}\n",
+                      streamThread.state(),
+                      partitions,
+                      taskManager.activeTaskIds(),
+                      taskManager.standbyTaskIds());
+        }
 
         // We need to still invoke handleRevocation if the thread has been told to shut down, but we shouldn't ever
         // transition away from PENDING_SHUTDOWN once it's been initiated (to anything other than DEAD)

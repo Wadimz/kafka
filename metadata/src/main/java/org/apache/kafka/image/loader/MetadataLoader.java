@@ -278,14 +278,18 @@ public class MetadataLoader implements RaftClient.Listener<ApiMessageAndVersion>
         }
         if (stillNeedToCatchUp("initializeNewPublishers", image.highestOffsetAndEpoch().offset())) {
             // Reschedule the initialization for later.
-            log.debug("InitializeNewPublishers: unable to initialize new publisher(s) {} " +
-                            "because we are still catching up with quorum metadata. Rescheduling.",
+            if (log.isDebugEnabled()) {
+                log.debug("InitializeNewPublishers: unable to initialize new publisher(s) {} " +
+                        "because we are still catching up with quorum metadata. Rescheduling.",
                     uninitializedPublisherNames());
+            }
             scheduleInitializeNewPublishers(TimeUnit.MILLISECONDS.toNanos(100));
             return;
         }
-        log.debug("InitializeNewPublishers: setting up snapshot image for new publisher(s): {}",
+        if (log.isDebugEnabled()) {
+            log.debug("InitializeNewPublishers: setting up snapshot image for new publisher(s): {}",
                 uninitializedPublisherNames());
+        }
         long startNs = time.nanoseconds();
         // We base this delta off of the empty image, reflecting the fact that these publishers
         // haven't seen anything previously.

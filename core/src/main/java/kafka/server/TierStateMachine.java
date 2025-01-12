@@ -255,9 +255,11 @@ public class TierStateMachine {
 
         buildProducerSnapshotFile(unifiedLog, nextOffset, remoteLogSegmentMetadata, rlm);
 
-        log.debug("Built the leader epoch cache and producer snapshots from remote tier for {}, " +
-                        "with active producers size: {}, leaderLogStartOffset: {}, and logEndOffset: {}",
-                partition, unifiedLog.producerStateManager().activeProducers().size(), leaderLogStartOffset, nextOffset);
+        if (log.isDebugEnabled()) {
+            log.debug("Built the leader epoch cache and producer snapshots from remote tier for {}, " +
+                            "with active producers size: {}, leaderLogStartOffset: {}, and logEndOffset: {}",
+                    partition, unifiedLog.producerStateManager().activeProducers().size(), leaderLogStartOffset, nextOffset);
+        }
 
         return nextOffset;
     }

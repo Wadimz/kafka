@@ -67,8 +67,10 @@ public class TimeIndex extends AbstractIndex {
 
         this.lastEntry = lastEntryFromIndexFile();
 
-        log.debug("Loaded index file {} with maxEntries = {}, maxIndexSize = {}, entries = {}, lastOffset = {}, file position = {}",
-            file.getAbsolutePath(), maxEntries(), maxIndexSize, entries(), lastEntry.offset, mmap().position());
+        if (log.isDebugEnabled()) {
+            log.debug("Loaded index file {} with maxEntries = {}, maxIndexSize = {}, entries = {}, lastOffset = {}, file position = {}",
+                file.getAbsolutePath(), maxEntries(), maxIndexSize, entries(), lastEntry.offset, mmap().position());
+        }
     }
 
     @Override
@@ -279,8 +281,10 @@ public class TimeIndex extends AbstractIndex {
         try {
             super.truncateToEntries0(entries);
             this.lastEntry = lastEntryFromIndexFile();
-            log.debug("Truncated index {} to {} entries; position is now {} and last entry is now {}",
-                file().getAbsolutePath(), entries, mmap().position(), lastEntry.offset);
+            if (log.isDebugEnabled()) {
+                log.debug("Truncated index {} to {} entries; position is now {} and last entry is now {}",
+                    file().getAbsolutePath(), entries, mmap().position(), lastEntry.offset);
+            }
         } finally {
             lock.unlock();
         }

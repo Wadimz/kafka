@@ -540,7 +540,8 @@ public abstract class TopicCommand {
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof UnsupportedVersionException || cause instanceof ClusterAuthorizationException) {
-                    LOG.debug("Couldn't query reassignments through the AdminClient API: " + cause.getMessage(), cause);
+                    LOG.debug("Couldn't query reassignments through the AdminClient API: {}", cause.getMessage(),
+                        cause);
                     return Collections.emptyMap();
                 } else {
                     throw new RuntimeException(e);

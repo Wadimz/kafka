@@ -298,7 +298,9 @@ public abstract class AbstractCoordinator implements Closeable {
 
             if (future.failed()) {
                 if (future.isRetriable()) {
-                    log.debug("Coordinator discovery failed, refreshing metadata", future.exception());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Coordinator discovery failed, refreshing metadata", future.exception());
+                    }
                     timer.sleep(retryBackoff.backoff(attempts++));
                     client.awaitMetadataUpdate(timer);
                 } else {

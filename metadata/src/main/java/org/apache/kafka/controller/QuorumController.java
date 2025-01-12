@@ -522,8 +522,10 @@ public final class QuorumController implements Controller {
     private void handleEventEnd(String name, long startProcessingTimeNs) {
         long endProcessingTime = time.nanoseconds();
         long deltaNs = endProcessingTime - startProcessingTimeNs;
-        log.debug("Processed {} in {} us", name,
-            MICROSECONDS.convert(deltaNs, NANOSECONDS));
+        if (log.isDebugEnabled()) {
+            log.debug("Processed {} in {} us", name,
+                MICROSECONDS.convert(deltaNs, NANOSECONDS));
+        }
         controllerMetrics.updateEventQueueProcessingTime(NANOSECONDS.toMillis(deltaNs));
     }
 

@@ -1249,8 +1249,10 @@ public class StreamThread extends Thread implements ProcessingThread {
                 .ifPresent(t -> taskManager.updateTaskEndMetadata(topicPartition, t.offset()));
         }
 
-        log.debug("Main Consumer poll completed in {} ms and fetched {} records from partitions {}",
-            pollLatency, numRecords, records.partitions());
+        if (log.isDebugEnabled()) {
+            log.debug("Main Consumer poll completed in {} ms and fetched {} records from partitions {}",
+                pollLatency, numRecords, records.partitions());
+        }
 
         pollSensor.record(pollLatency, now);
 
@@ -1410,12 +1412,10 @@ public class StreamThread extends Thread implements ProcessingThread {
                     }
                 } catch (final TimeoutException timeoutException) {
                     taskManager.maybeInitTaskTimeoutsOrThrow(seekByDuration.keySet(), timeoutException, now);
-                    log.debug(
-                        String.format(
-                            "Could not reset offset for %s due to the following exception; will retry.",
-                            seekByDuration.keySet()),
-                        timeoutException
-                    );
+                    if (log.isDebugEnabled()) {
+                        log.debug("Could not reset offset for {} due to the following exception; will retry.",
+                            seekByDuration.keySet(), timeoutException);
+                    }
                 }
             }
         } else {

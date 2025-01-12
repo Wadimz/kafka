@@ -1114,7 +1114,9 @@ public class TransactionManager {
     }
 
     private void enqueueRequest(TxnRequestHandler requestHandler) {
-        log.debug("Enqueuing transactional request {}", requestHandler.requestBuilder());
+        if (log.isDebugEnabled()) {
+            log.debug("Enqueuing transactional request {}", requestHandler.requestBuilder());
+        }
         pendingRequests.add(requestHandler);
     }
 
