@@ -666,8 +666,10 @@ public class StoreChangelogReader implements ChangelogReader {
             task.recordRestoration(time, numRecords, false);
 
             final Long currentOffset = storeMetadata.offset();
-            log.trace("Restored {} records from changelog {} to store {}, end offset is {}, current offset is {}",
-                numRecords, partition, storeName, recordEndOffset(changelogMetadata.restoreEndOffset), currentOffset);
+            if (log.isTraceEnabled()) {
+                log.trace("Restored {} records from changelog {} to store {}, end offset is {}, current offset is {}",
+                    numRecords, partition, storeName, recordEndOffset(changelogMetadata.restoreEndOffset), currentOffset);
+            }
 
             changelogMetadata.bufferedLimitIndex = 0;
             changelogMetadata.totalRestored += numRecords;

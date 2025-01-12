@@ -600,7 +600,7 @@ public final class LocalLogManager implements RaftClient<ApiMessageAndVersion>, 
                         numEntriesFound++;
                     }
                 }
-                log.trace("Completed log check for node " + nodeId);
+                log.trace("Completed log check for node {}", nodeId);
             } catch (Exception e) {
                 log.error("Exception while handling log check", e);
             }

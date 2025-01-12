@@ -379,10 +379,11 @@ public class MirrorSourceConnector extends SourceConnector {
                      newTopicPartitions.size(), sourceAndTarget.source(),
                      deletedTopicPartitions.size(), sourceAndTarget.source(),
                      missingInTarget.size(), sourceAndTarget.target());
-
-            log.trace("Found new topic-partitions on {}: {}", sourceAndTarget.source(), newTopicPartitions);
-            log.trace("Found deleted topic-partitions on {}: {}", sourceAndTarget.source(), deletedTopicPartitions);
-            log.trace("Found missing topic-partitions on {}: {}", sourceAndTarget.target(), missingInTarget);
+            if (log.isTraceEnabled()) {
+                log.trace("Found new topic-partitions on {}: {}", sourceAndTarget.source(), newTopicPartitions);
+                log.trace("Found deleted topic-partitions on {}: {}", sourceAndTarget.source(), deletedTopicPartitions);
+                log.trace("Found missing topic-partitions on {}: {}", sourceAndTarget.target(), missingInTarget);
+            }
 
             knownSourceTopicPartitions = sourceTopicPartitions;
             computeAndCreateTopicPartitions();

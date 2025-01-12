@@ -85,8 +85,10 @@ public class ReplicationQuotaManager implements ReplicaQuota {
             sensor().checkQuotas();
             return false;
         } catch (QuotaViolationException qve) {
-            LOGGER.trace("{}: Quota violated for sensor ({}), metric: ({}), metric-value: ({}), bound: ({})",
-                replicationType, sensor().name(), qve.metric().metricName(), qve.value(), qve.bound());
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("{}: Quota violated for sensor ({}), metric: ({}), metric-value: ({}), bound: ({})",
+                    replicationType, sensor().name(), qve.metric().metricName(), qve.value(), qve.bound());
+            }
             return true;
         }
     }

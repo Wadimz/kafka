@@ -350,8 +350,10 @@ public class SslTransportLayer implements TransportLayer {
                 handshakeStatus = runDelegatedTasks();
                 break;
             case NEED_WRAP:
-                log.trace("SSLHandshake NEED_WRAP channelId {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
-                          channelId, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                if (log.isTraceEnabled()) {
+                    log.trace("SSLHandshake NEED_WRAP channelId {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
+                              channelId, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                }
                 handshakeResult = handshakeWrap(write);
                 if (handshakeResult.getStatus() == Status.BUFFER_OVERFLOW) {
                     int currentNetWriteBufferSize = netWriteBufferSize();
@@ -367,8 +369,10 @@ public class SslTransportLayer implements TransportLayer {
                 } else if (handshakeResult.getStatus() == Status.CLOSED) {
                     throw new EOFException();
                 }
-                log.trace("SSLHandshake NEED_WRAP channelId {}, handshakeResult {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
-                       channelId, handshakeResult, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                if (log.isTraceEnabled()) {
+                    log.trace("SSLHandshake NEED_WRAP channelId {}, handshakeResult {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
+                           channelId, handshakeResult, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                }
                 //if handshake status is not NEED_UNWRAP or unable to flush netWriteBuffer contents
                 //we will break here otherwise we can do need_unwrap in the same call.
                 if (handshakeStatus != HandshakeStatus.NEED_UNWRAP || !flush(netWriteBuffer)) {
@@ -376,8 +380,10 @@ public class SslTransportLayer implements TransportLayer {
                     break;
                 }
             case NEED_UNWRAP:
-                log.trace("SSLHandshake NEED_UNWRAP channelId {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
-                          channelId, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                if (log.isTraceEnabled()) {
+                    log.trace("SSLHandshake NEED_UNWRAP channelId {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
+                              channelId, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                }
                 do {
                     handshakeResult = handshakeUnwrap(read, false);
                     if (handshakeResult.getStatus() == Status.BUFFER_OVERFLOW) {
@@ -398,8 +404,10 @@ public class SslTransportLayer implements TransportLayer {
                 } else if (handshakeResult.getStatus() == Status.CLOSED) {
                     throw new EOFException("SSL handshake status CLOSED during handshake UNWRAP");
                 }
-                log.trace("SSLHandshake NEED_UNWRAP channelId {}, handshakeResult {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
-                          channelId, handshakeResult, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                if (log.isTraceEnabled()) {
+                    log.trace("SSLHandshake NEED_UNWRAP channelId {}, handshakeResult {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {}",
+                              channelId, handshakeResult, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+                }
 
                 //if handshakeStatus completed than fall-through to finished status.
                 //after handshake is finished there is no data left to read/write in socketChannel.
@@ -469,8 +477,10 @@ public class SslTransportLayer implements TransportLayer {
                     new CipherInformation(session.getCipherSuite(),  session.getProtocol()));
             }
 
-            log.trace("SSLHandshake FINISHED channelId {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {} ",
-                      channelId, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+            if (log.isTraceEnabled()) {
+                log.trace("SSLHandshake FINISHED channelId {}, appReadBuffer pos {}, netReadBuffer pos {}, netWriteBuffer pos {} ",
+                          channelId, appReadBuffer.position(), netReadBuffer.position(), netWriteBuffer.position());
+            }
         } else {
             throw new IOException("NOT_HANDSHAKING during handshake");
         }

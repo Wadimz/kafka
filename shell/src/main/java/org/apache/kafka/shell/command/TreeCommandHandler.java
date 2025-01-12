@@ -96,7 +96,7 @@ public final class TreeCommandHandler implements Commands.Handler {
         PrintWriter writer,
         MetadataShellState state
     ) throws Exception {
-        log.trace("tree " + targets);
+        log.trace("tree {}", targets);
         for (String target : targets) {
             state.visit(new GlobVisitor(target, entryOption -> {
                 if (entryOption.isPresent()) {

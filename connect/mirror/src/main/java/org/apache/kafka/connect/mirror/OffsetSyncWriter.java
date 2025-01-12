@@ -86,8 +86,10 @@ class OffsetSyncWriter implements AutoCloseable {
             if (e != null) {
                 LOG.error("Failure sending offset sync.", e);
             } else {
-                LOG.trace("Sync'd offsets for {}: {}=={}", offsetSync.topicPartition(),
-                        offsetSync.upstreamOffset(), offsetSync.downstreamOffset());
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Sync'd offsets for {}: {}=={}", offsetSync.topicPartition(),
+                            offsetSync.upstreamOffset(), offsetSync.downstreamOffset());
+                }
             }
             outstandingOffsetSyncs.release();
         });

@@ -86,7 +86,7 @@ public class FileLock {
      */
     public synchronized void destroy() throws IOException {
         unlock();
-        if (file.exists() && file.delete()) {
+        if (file.exists() && file.delete() && LOGGER.isTraceEnabled()) {
             LOGGER.trace("Deleted {}", file.getAbsolutePath());
         }
         channel.close();

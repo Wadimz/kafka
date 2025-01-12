@@ -94,9 +94,11 @@ public class DelayedShareFetch extends DelayedOperation {
         // We are utilizing lock so that onComplete doesn't do a dirty read for instance variables -
         // partitionsAcquired and partitionsAlreadyFetched, since these variables can get updated in a different tryComplete thread.
         lock.lock();
-        log.trace("Completing the delayed share fetch request for group {}, member {}, "
-            + "topic partitions {}", shareFetch.groupId(), shareFetch.memberId(),
-            partitionsAcquired.keySet());
+        if (log.isTraceEnabled()) {
+            log.trace("Completing the delayed share fetch request for group {}, member {}, "
+                + "topic partitions {}", shareFetch.groupId(), shareFetch.memberId(),
+                partitionsAcquired.keySet());
+        }
 
         try {
             LinkedHashMap<TopicIdPartition, FetchRequest.PartitionData> topicPartitionData;
@@ -112,8 +114,10 @@ public class DelayedShareFetch extends DelayedOperation {
                 shareFetch.maybeComplete(Collections.emptyMap());
                 return;
             }
-            log.trace("Fetchable share partitions data: {} with groupId: {} fetch params: {}",
-                topicPartitionData, shareFetch.groupId(), shareFetch.fetchParams());
+            if (log.isTraceEnabled()) {
+                log.trace("Fetchable share partitions data: {} with groupId: {} fetch params: {}",
+                    topicPartitionData, shareFetch.groupId(), shareFetch.fetchParams());
+            }
 
             completeShareFetchRequest(topicPartitionData);
         } finally {
@@ -178,15 +182,19 @@ public class DelayedShareFetch extends DelayedOperation {
                     }
                     return completedByMe;
                 } else {
-                    log.debug("minBytes is not satisfied for the share fetch request for group {}, member {}, " +
-                            "topic partitions {}", shareFetch.groupId(), shareFetch.memberId(),
-                        sharePartitions.keySet());
+                    if (log.isDebugEnabled()) {
+                        log.debug("minBytes is not satisfied for the share fetch request for group {}, member {}, " +
+                                "topic partitions {}", shareFetch.groupId(), shareFetch.memberId(),
+                            sharePartitions.keySet());
+                    }
                     releasePartitionLocks(topicPartitionData.keySet());
                 }
             } else {
-                log.trace("Can't acquire records for any partition in the share fetch request for group {}, member {}, " +
-                        "topic partitions {}", shareFetch.groupId(), shareFetch.memberId(),
-                    sharePartitions.keySet());
+                if (log.isTraceEnabled()) {
+                    log.trace("Can't acquire records for any partition in the share fetch request for group {}, member {}, " +
+                            "topic partitions {}", shareFetch.groupId(), shareFetch.memberId(),
+                        sharePartitions.keySet());
+                }
             }
             return false;
         } catch (Exception e) {

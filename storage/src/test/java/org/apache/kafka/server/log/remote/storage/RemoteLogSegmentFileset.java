@@ -254,13 +254,13 @@ public final class RemoteLogSegmentFileset {
 
     public static boolean deleteQuietly(final File file) {
         try {
-            LOGGER.trace("Deleting " + file.getAbsolutePath());
+            LOGGER.trace("Deleting {}", file.getAbsolutePath());
             if (!file.exists()) {
                 return true;
             }
             return file.delete();
         } catch (final Exception e) {
-            LOGGER.error(format("Encountered error while deleting %s", file.getAbsolutePath()));
+            LOGGER.error("Encountered error while deleting {}", file.getAbsolutePath());
         }
 
         return false;

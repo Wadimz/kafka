@@ -92,7 +92,9 @@ public final class Heartbeat {
         heartbeatInFlight = false;
         heartbeatTimer.reset(retryBackoff.backoff(heartbeatAttempts++));
 
-        log.trace("Heartbeat failed, reset the timer to {}ms remaining", heartbeatTimer.remainingMs());
+        if (log.isTraceEnabled()) {
+            log.trace("Heartbeat failed, reset the timer to {}ms remaining", heartbeatTimer.remainingMs());
+        }
     }
 
     void receiveHeartbeat() {

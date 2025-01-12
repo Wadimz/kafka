@@ -375,12 +375,12 @@ public class ReplicationQuotasTestRig {
                 if (broker.config().nodeId() == 0)
                     LOGGER.info("waiting... Leader rate on 1 is {}", leaderRate);
                 record(leaderRates, broker.config().nodeId(), leaderRate);
-                if (leaderRate > 0)
+                if (leaderRate > 0 && LOGGER.isTraceEnabled())
                     LOGGER.trace("Leader Rate on {} is {}", broker.config().nodeId(), leaderRate);
 
                 double followerRate = measuredRate(broker, QuotaType.FOLLOWER_REPLICATION);
                 record(followerRates, broker.config().nodeId(), followerRate);
-                if (followerRate > 0)
+                if (followerRate > 0 && LOGGER.isTraceEnabled())
                     LOGGER.trace("Follower Rate on {} is {}", broker.config().nodeId(), followerRate);
             }
         }

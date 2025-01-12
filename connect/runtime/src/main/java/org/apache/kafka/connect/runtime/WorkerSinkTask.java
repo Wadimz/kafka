@@ -514,8 +514,10 @@ class WorkerSinkTask extends WorkerTask<ConsumerRecord<byte[], byte[]>, SinkReco
 
     private void convertMessages(ConsumerRecords<byte[], byte[]> msgs) {
         for (ConsumerRecord<byte[], byte[]> msg : msgs) {
-            log.trace("{} Consuming and converting message in topic '{}' partition {} at offset {} and timestamp {}",
-                    this, msg.topic(), msg.partition(), msg.offset(), msg.timestamp());
+            if (log.isTraceEnabled()) {
+                log.trace("{} Consuming and converting message in topic '{}' partition {} at offset {} and timestamp {}",
+                        this, msg.topic(), msg.partition(), msg.offset(), msg.timestamp());
+            }
 
             ProcessingContext<ConsumerRecord<byte[], byte[]>> context = new ProcessingContext<>(msg);
 
@@ -528,11 +530,13 @@ class WorkerSinkTask extends WorkerTask<ConsumerRecord<byte[], byte[]>, SinkReco
             if (transRecord != null) {
                 messageBatch.add(transRecord);
             } else {
-                log.trace(
-                        "{} Converters and transformations returned null, possibly because of too many retries, so " +
-                                "dropping record in topic '{}' partition {} at offset {}",
-                        this, msg.topic(), msg.partition(), msg.offset()
-                );
+                if (log.isTraceEnabled()) {
+                    log.trace(
+                            "{} Converters and transformations returned null, possibly because of too many retries, so " +
+                                    "dropping record in topic '{}' partition {} at offset {}",
+                            this, msg.topic(), msg.partition(), msg.offset()
+                    );
+                }
             }
         }
         sinkTaskMetricsGroup.recordConsumedOffsets(origOffsets);
@@ -559,8 +563,10 @@ class WorkerSinkTask extends WorkerTask<ConsumerRecord<byte[], byte[]>, SinkReco
                 timestamp,
                 msg.timestampType(),
                 headers);
-        log.trace("{} Applying transformations to record in topic '{}' partition {} at offset {} and timestamp {} with key {} and value {}",
-                this, msg.topic(), msg.partition(), msg.offset(), timestamp, keyAndSchema.value(), valueAndSchema.value());
+        if (log.isTraceEnabled()) {
+            log.trace("{} Applying transformations to record in topic '{}' partition {} at offset {} and timestamp {} with key {} and value {}",
+                    this, msg.topic(), msg.partition(), msg.offset(), timestamp, keyAndSchema.value(), valueAndSchema.value());
+        }
         if (isTopicTrackingEnabled) {
             recordActiveTopic(origRecord.topic());
         }

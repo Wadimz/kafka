@@ -112,7 +112,9 @@ public class OffsetCheckpoint {
                 fileOutputStream.getFD().sync();
             }
 
-            LOG.trace("Swapping tmp checkpoint file {} {}", temp.toPath(), file.toPath());
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Swapping tmp checkpoint file {} {}", temp.toPath(), file.toPath());
+            }
             Utils.atomicMoveWithFallback(temp.toPath(), file.toPath());
         }
     }

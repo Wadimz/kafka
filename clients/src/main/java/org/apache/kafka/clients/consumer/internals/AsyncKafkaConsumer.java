@@ -763,7 +763,7 @@ public class AsyncKafkaConsumer<K, V> implements ConsumerDelegate<K, V> {
                     // wakeups or any other errors to be triggered prior to returning the fetched records.
                     sendPrefetches(timer);
 
-                    if (fetch.records().isEmpty()) {
+                    if (fetch.records().isEmpty() && log.isTraceEnabled()) {
                         log.trace("Returning empty records from `poll()` "
                             + "since the consumer's position has advanced for at least one topic partition");
                     }

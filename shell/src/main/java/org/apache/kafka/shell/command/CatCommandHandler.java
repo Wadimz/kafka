@@ -96,7 +96,7 @@ public final class CatCommandHandler implements Commands.Handler {
         PrintWriter writer,
         MetadataShellState state
     ) throws Exception {
-        log.trace("cat " + targets);
+        log.trace("cat {}", targets);
         for (String target : targets) {
             state.visit(new GlobVisitor(target, entryOption -> {
                 if (entryOption.isPresent()) {

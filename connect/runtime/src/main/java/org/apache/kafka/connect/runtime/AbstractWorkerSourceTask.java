@@ -426,10 +426,12 @@ public abstract class AbstractWorkerSourceTask extends WorkerTask<SourceRecord, 
                             }
                         } else {
                             counter.completeRecord();
-                            log.trace("{} Wrote record successfully: topic {} partition {} offset {}",
-                                    AbstractWorkerSourceTask.this,
-                                    recordMetadata.topic(), recordMetadata.partition(),
-                                    recordMetadata.offset());
+                            if (log.isTraceEnabled()) {
+                                log.trace("{} Wrote record successfully: topic {} partition {} offset {}",
+                                        AbstractWorkerSourceTask.this,
+                                        recordMetadata.topic(), recordMetadata.partition(),
+                                        recordMetadata.offset());
+                            }
                             recordSent(preTransformRecord, producerRecord, recordMetadata);
                             submittedRecord.ifPresent(SubmittedRecords.SubmittedRecord::ack);
                             if (topicTrackingEnabled) {

@@ -142,9 +142,11 @@ public class ShareFetchCollector<K, V> {
     }
 
     private ShareCompletedFetch handleInitializeSuccess(final ShareCompletedFetch completedFetch) {
-        log.trace("Preparing to read {} bytes of data for partition {}",
-                ShareFetchResponse.recordsSize(completedFetch.partitionData),
-                completedFetch.partition.topicPartition());
+        if (log.isTraceEnabled()) {
+            log.trace("Preparing to read {} bytes of data for partition {}",
+                    ShareFetchResponse.recordsSize(completedFetch.partitionData),
+                    completedFetch.partition.topicPartition());
+        }
 
         completedFetch.setInitialized();
         return completedFetch;

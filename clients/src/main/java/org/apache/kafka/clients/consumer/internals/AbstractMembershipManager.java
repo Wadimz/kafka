@@ -799,8 +799,9 @@ public abstract class AbstractMembershipManager<R extends AbstractResponse> impl
             return;
         }
         if (reconciliationInProgress) {
-            log.trace("Ignoring reconciliation attempt. Another reconciliation is already in progress. Assignment " +
-                currentTargetAssignment + " will be handled in the next reconciliation loop.");
+            log.trace(
+                "Ignoring reconciliation attempt. Another reconciliation is already in progress. Assignment {} will be handled in the next reconciliation loop.",
+                currentTargetAssignment);
             return;
         }
 

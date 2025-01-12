@@ -308,8 +308,10 @@ public class PartitionChangeBuilder {
         //    in the field even if useLastKnownLeaderInBalancedRecovery is set to true again. In this case, we can't
         //    refer to the lastKnownElr.
         if (partition.lastKnownElr.length != 1) {
-            log.trace("Try to elect last known leader for {}-{} but lastKnownElr does not only have 1 member. lastKnownElr={}",
-                    topicId, partitionId, Arrays.toString(partition.lastKnownElr));
+            if (log.isTraceEnabled()) {
+                log.trace("Try to elect last known leader for {}-{} but lastKnownElr does not only have 1 member. lastKnownElr={}",
+                        topicId, partitionId, Arrays.toString(partition.lastKnownElr));
+            }
             return false;
         }
         if (isAcceptableLeader.test(partition.lastKnownElr[0])) {

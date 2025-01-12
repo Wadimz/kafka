@@ -53,7 +53,7 @@ public class StreamsClientMetricsDelegatingReporter implements MetricsReporter {
 
     private boolean isStreamsClientMetric(final KafkaMetric metric) {
         final boolean shouldInclude = metric.metricName().group().equals("stream-metrics");
-        if (!shouldInclude) {
+        if (!shouldInclude && log.isTraceEnabled()) {
             log.trace("Rejecting thread metric {}", metric.metricName());
         }
         return shouldInclude;

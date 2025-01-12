@@ -258,8 +258,10 @@ public class FetchCollector<K, V> {
         }
 
         final FetchResponseData.PartitionData partition = completedFetch.partitionData;
-        log.trace("Preparing to read {} bytes of data for partition {} with offset {}",
-                FetchResponse.recordsSize(partition), tp, position);
+        if (log.isTraceEnabled()) {
+            log.trace("Preparing to read {} bytes of data for partition {} with offset {}",
+                    FetchResponse.recordsSize(partition), tp, position);
+        }
         Iterator<? extends RecordBatch> batches = FetchResponse.recordsOrFail(partition).batches().iterator();
 
         if (!batches.hasNext() && FetchResponse.recordsSize(partition) > 0) {
