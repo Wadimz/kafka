@@ -60,13 +60,13 @@ jobs:
   load-catalog:
     needs: [configure]
     runs-on: ubuntu-latest
+    if: ${{ !github.event.repository.fork }}
     name: Load Test Catalog
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-
       - name: Checkout test-catalog
         uses: actions/checkout@v4
         with:
