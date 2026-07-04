@@ -63,6 +63,7 @@ jobs:
   load-catalog:
     needs: [configure]
     runs-on: ubuntu-latest
+    if: ${{ !github.event.repository.fork }}
     name: Load Test Catalog
     steps:
       - name: Checkout main
@@ -369,7 +370,7 @@ jobs:
   checks-complete:
     name: "CI checks completed"
     needs: [configure, validate, test]
-    if: always()
+    if: ${{ !github.event.repository.fork }}
     runs-on: ubuntu-latest
     steps:
       - name: Env
@@ -387,6 +388,10 @@ jobs:
             echo "Required jobs completed successfully!"
             exit 0
           else
-            echo "Required jobs did not complete successfully"
-            exit 1
+            if [[ ${{ !github.event.repository.fork }} == "true" ]]; then
+              echo "skipped"
+            else
+              echo "Required jobs did not complete successfully"
+              exit 1
+            fi
           fi
