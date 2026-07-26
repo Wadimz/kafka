@@ -41,7 +41,7 @@ run-name: Build Scans for ${{ github.event.workflow_run.display_title}}
 
 jobs:
   get-build-scan-names:
-    if: ${{ !github.event.repository.fork }} && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure')
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     outputs:
       build-scan-names: ${{ steps.build-scan-names.outputs.build-scan-names }}
@@ -58,12 +58,16 @@ jobs:
             --jq '[.artifacts[] | select(.name | startswith("build-scan-")) | .name]')
           echo "Found: $names"
 
+          if [ "$names" = "[]" ]; then
+            names='["__NO_BUILD_SCAN__"]'
+          fi
+
           echo "build-scan-names=$names" >> $GITHUB_OUTPUT
 
   upload-build-scan:
     needs: get-build-scan-names
     # Skip this workflow if the CI run was skipped or cancelled
-    if: ${{ !github.event.repository.fork }} && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure')
+    if: ${{ !github.event.repository.fork && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure') && needs.get-build-scan-names.outputs.build-scan-names != '["__NO_BUILD_SCAN__"]' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -105,15 +109,9 @@ jobs:
           path: ~/.gradle/build-scan-data  # This is where Gradle buffers unpublished build scan data when --no-scan is given
       - name: Handle missing scan
         if: ${{ steps.download-build-scan.outcome == 'failure' }}
-        uses: ./.github/actions/gh-api-update-status
-        with:
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          commit_sha: ${{ github.event.workflow_run.head_sha }}
-          url: '${{ github.event.workflow_run.html_url }}'
-          description: 'Could not find build scan'
-          context: Gradle Build Scan / ${{ env.STATUS_CONTEXT }}
-          state: 'error'
+        run: |
+          echo "Could not find build scan for $STATUS_CONTEXT" >> $GITHUB_STEP_SUMMARY
+          echo "This run completed successfully, but no build scan artifact was available to publish." >> $GITHUB_STEP_SUMMARY
       - name: Publish Scan
         id: publish-build-scan
         if: ${{ steps.download-build-scan.outcome == 'success' }}
